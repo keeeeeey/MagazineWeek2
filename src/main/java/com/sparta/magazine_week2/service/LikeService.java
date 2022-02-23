@@ -11,6 +11,7 @@ import com.sparta.magazine_week2.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class LikeService {
@@ -34,31 +35,45 @@ public class LikeService {
         }
 
         //이미 값이 있을 때
-        int likecnt = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId()).size();
-        if (likecnt != 0){
-
-            return responseDto;
-        } else if (likecnt == 0) {
-            //좋아요 DB 저장
-            LikeNumber likeNumber = new LikeNumber(likeRequestDto);
-            likeRepository.save(likeNumber);
+        List<LikeNumber> list = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
+        if (list.size() != 0) {
+            likeRepository.deleteById(list.get(0).getId());
 
             //해당 POST 게시물 likecount +1 해주기
             Post post = postRepository.findById(likeRequestDto.getPostId())
                     .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
 
-            PostUpdateRequestDto updateRequestDto = new PostUpdateRequestDto();
-            updateRequestDto.setLikeCount(updateRequestDto.getLikeCount() + 1);
+            PostUpdateRequestDto updateRequestDto = new PostUpdateRequestDto(post);
+            updateRequestDto.setLikeCount(updateRequestDto.getLikeCount() - 1);
 
             post.update(updateRequestDto);
 
             //리턴
 
             responseDto.setResult(true);
-            responseDto.setMsg("성공");
+            responseDto.setMsg("좋아요 취소 성공");
+
             return responseDto;
         }
+        //좋아요 DB 저장
+        LikeNumber likeNumber = new LikeNumber(likeRequestDto);
+        likeRepository.save(likeNumber);
 
+        //해당 POST 게시물 likecount +1 해주기
+        Post post = postRepository.findById(likeRequestDto.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+
+        PostUpdateRequestDto updateRequestDto = new PostUpdateRequestDto(post);
+        updateRequestDto.setLikeCount(updateRequestDto.getLikeCount() + 1);
+
+        post.update(updateRequestDto);
+
+        //리턴
+
+        responseDto.setResult(true);
+        responseDto.setMsg("좋아요 성공");
+
+        return responseDto;
     }
 
 }

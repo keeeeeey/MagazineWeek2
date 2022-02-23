@@ -18,4 +18,13 @@ public class PostUpdateRequestDto {
     private int likeCount;
     private String image; //내용
     private String type;
+
+    public PostUpdateRequestDto(Post post) {
+        this.postId = post.getId();
+        this.contents = post.getContents();
+        this.nickName = post.getNickName();
+        this.likeCount = post.getLikeCount();
+        this.image = post.getImage();
+        this.type = post.getType();
+    }
 }
