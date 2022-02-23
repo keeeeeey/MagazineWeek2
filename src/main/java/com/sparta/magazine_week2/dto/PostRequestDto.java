@@ -9,6 +9,7 @@ public class PostRequestDto {
 
     private String contents; //내용
     private String nickName;
+    private String username;
     private String image; //내용
     private String type;
 

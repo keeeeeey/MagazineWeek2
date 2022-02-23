@@ -6,12 +6,11 @@ import com.sparta.magazine_week2.dto.PostUpdateRequestDto;
 import com.sparta.magazine_week2.dto.UserResponseDto;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.repository.PostRepository;
+import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.PostService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -43,13 +42,20 @@ public class PostController {
 
     //게시물 수정
     @PutMapping("/api/post") //게시물 수정
-    public UserResponseDto putPost(@RequestBody PostUpdateRequestDto updateRequestDto){
+    public UserResponseDto putPost(@RequestBody PostUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponseDto responseDto = new UserResponseDto();
+        String username = userDetails.getUsername();
+        String username2 = updateRequestDto.getUsername();
+        if (!username.equals(username2)) {
+            responseDto.setResult(false);
+            responseDto.setMsg("작성자만 수정이 가능합니다.");
+        }
         return postService.update(updateRequestDto);
     }
 
     //게시물 삭제
     @DeleteMapping("/api/post") // 게시물 삭제
-    public UserResponseDto deletePost(@RequestBody PostRemoveRequestDto removeRequestDto){
+    public UserResponseDto deletePost(@RequestBody PostRemoveRequestDto removeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDtails){
         UserResponseDto responseDto = new UserResponseDto();
         postRepository.deleteById(removeRequestDto.getPostId());
         responseDto.setResult(true);
