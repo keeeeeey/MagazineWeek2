@@ -1,25 +1,25 @@
+server:
+  port: 80
+
 spring:
-
-  h2:
-    console:
-      enabled: true
-
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
   datasource:
-    url: jdbc:h2:mem:week2db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # DB Source
+    url: jdbc:mysql://magazine-db.c5hxzzygkuri.ap-northeast-2.rds.amazonaws.com:3306/magazine?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    # DB username
+    username: admin
+    # DB password
+    password: kp23156385
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
-    defer-datasource-initialization: true
 
 logging:
   level:
-    me.silvernine: DEBUG
+    org.hibernate.SQL: debug

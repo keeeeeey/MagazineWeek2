@@ -1,6 +1,5 @@
 package com.sparta.magazine_week2.entity;
 
-import com.sparta.magazine_week2.dto.LoginRequestDto;
 import com.sparta.magazine_week2.dto.UserRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,14 +26,15 @@ public class User extends Timestamped {
     @Column(nullable = false, unique = true)
     private String nickName; //닉네임
 
-    public User(UserRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
-        this.nickName = requestDto.getNickName();
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+    public User(String username, String password, String nickName, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.nickName = nickName;
+        this.role = role;
     }
 
-    public User(LoginRequestDto loginDto){
-        this.username = loginDto.getUsername();
-        this.password = loginDto.getPassword();
-    }
 }

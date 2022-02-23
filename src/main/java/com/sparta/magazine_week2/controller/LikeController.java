@@ -21,23 +21,12 @@ public class LikeController {
 
     //게시글 좋아요
     @PostMapping("/api/like")
-    public UserResponseDto clicklike(@RequestBody LikeRequestDto likeRequestDto, HttpServletRequest request){
-        //세션 존재 확인
-        HttpSession session = request.getSession();
-        UserResponseDto returnDto = new UserResponseDto();
-        if (session.getAttribute("responseDto") == null){
-            returnDto.setResult(false);
-            returnDto.setMsg("로그인을 해주세요");
-            return returnDto;
-        }
+    public UserResponseDto clicklike(@RequestBody LikeRequestDto likeRequestDto){
         return likeService.pluslike(likeRequestDto);
     }
 
     @DeleteMapping("/api/like")
     public UserResponseDto deletelike(@RequestBody LikeRequestDto likeRequestDto){
-        UserResponseDto returnDto = new UserResponseDto();
-
-
         return likeService.dellike(likeRequestDto);
     }
 

@@ -25,16 +25,8 @@ public class PostController {
     }
 
     @PostMapping("/api/post") //게시물 등록
-    public UserResponseDto createpost(@RequestBody PostRequestDto requestDto, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
+    public UserResponseDto createpost(@RequestBody PostRequestDto requestDto) {
         UserResponseDto responseDto = new UserResponseDto();
-
-        //세션 확인
-        if (session.getAttribute("responseDto") == null) {
-            responseDto.setResult(false);
-            responseDto.setMsg("로그인을 해주세요");
-            return responseDto;
-        }
         Post post = new Post(requestDto);
         postRepository.save(post);
         responseDto.setResult(true);
