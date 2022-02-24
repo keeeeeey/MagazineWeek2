@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +22,10 @@ public class Post extends Timestamped {
 
     @Column(nullable = false)
     private String contents; //내용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column
     @ColumnDefault("0")
@@ -36,6 +42,9 @@ public class Post extends Timestamped {
 
     @Column(nullable = false)
     private String type; //내용
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<LikeNumber> likeNumber = new ArrayList<>();
 
     public Post(PostRequestDto requestDto){
         this.contents = requestDto.getContents();

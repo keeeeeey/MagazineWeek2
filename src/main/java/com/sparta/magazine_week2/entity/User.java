@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -25,6 +27,12 @@ public class User extends Timestamped {
 
     @Column(nullable = false, unique = true)
     private String nickName; //닉네임
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Post> post = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<LikeNumber> likeNumber = new ArrayList<>();
 
     public User(String username, String password, String nickName) {
         this.username = username;
