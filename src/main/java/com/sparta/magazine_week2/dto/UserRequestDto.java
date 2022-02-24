@@ -11,6 +11,4 @@ public class UserRequestDto {
     private String password; //비밀번호
     private String passwordCheck; //비밀번호
     private String nickName; //닉네임
-    private boolean admin; //권한
-    private String adminToken = ""; //관리자 토큰
 }

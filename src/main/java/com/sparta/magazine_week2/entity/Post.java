@@ -1,7 +1,6 @@
 package com.sparta.magazine_week2.entity;
 
 import com.sparta.magazine_week2.dto.PostRequestDto;
-import com.sparta.magazine_week2.dto.PostUpdateRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +21,12 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents; //내용
 
-    @Column(nullable = false)
+    @Column
     @ColumnDefault("0")
-    private int likeCount; //비밀번호
+    private Long likeCount; //좋아요
 
     @Column(nullable = false)
-    private String nickName; //내용
+    private String nickName; //닉네임
 
     @Column(nullable = false)
     private String username;
@@ -42,16 +41,17 @@ public class Post extends Timestamped {
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();
         this.username = requestDto.getUsername();
+        this.likeCount = requestDto.getLikeCount();
         this.image = requestDto.getImage();
         this.type = requestDto.getType();
     }
 
-    public void update(PostUpdateRequestDto updateRequestDto) {
-        this.contents = updateRequestDto.getContents();
-        this.nickName = updateRequestDto.getNickName();
-        this.username = updateRequestDto.getUsername();
-        this.likeCount = updateRequestDto.getLikeCount();
-        this.image = updateRequestDto.getImage();
-        this.type = updateRequestDto.getType();
+    public void update(PostRequestDto requestDto) {
+        this.contents = requestDto.getContents();
+        this.nickName = requestDto.getNickName();
+        this.username = requestDto.getUsername();
+        this.likeCount = requestDto.getLikeCount();
+        this.image = requestDto.getImage();
+        this.type = requestDto.getType();
     }
 }

@@ -1,7 +1,9 @@
 package com.sparta.magazine_week2.security;
 
+import com.sparta.magazine_week2.entity.Post;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -40,6 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 // 메인 페이지 login 없이 허용
                 .antMatchers("/").permitAll()
+                // 전체 글 조회 API login 없이 허용
+                .antMatchers(HttpMethod.GET, "/api/post").permitAll()
                 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 .and()

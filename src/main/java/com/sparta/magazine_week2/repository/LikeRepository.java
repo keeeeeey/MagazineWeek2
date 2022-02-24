@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<LikeNumber, Long> {
-    List<LikeNumber> findByPostIdAndUserId(Long postId, Long userId);
+    Optional<LikeNumber> findByPostIdAndUserId(Long postId, Long userId);
 }

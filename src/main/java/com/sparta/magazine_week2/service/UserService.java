@@ -3,7 +3,6 @@ package com.sparta.magazine_week2.service;
 import com.sparta.magazine_week2.dto.UserRequestDto;
 import com.sparta.magazine_week2.dto.UserResponseDto;
 import com.sparta.magazine_week2.entity.User;
-import com.sparta.magazine_week2.entity.UserRoleEnum;
 import com.sparta.magazine_week2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,34 +32,19 @@ public class UserService {
         String username = requestDto.getUsername();
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            responseDto.setMsg("중복된 사용자 ID 가 존재합니다.");
-            responseDto.setResult(false);
-            return responseDto;
+            throw new IllegalArgumentException("중복된 아이디입니다.");
         }
 
-        // 패스워드 암호화
         String password = requestDto.getPassword();
         String passwordCheck = requestDto.getPasswordCheck();
         if (!password.equals(passwordCheck)) {
-            responseDto.setMsg("비밀번호가 일치하지 않습니다.");
-            responseDto.setResult(false);
-            return responseDto;
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        // 패스워드 암호화
         String bcryptpassword = passwordEncoder.encode(password);
         String nickName = requestDto.getNickName();
 
-        // 사용자 ROLE 확인
-        UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                responseDto.setMsg("관리자 암호가 틀려 등록이 불가능합니다.");
-                responseDto.setResult(false);
-                return responseDto;
-            }
-            role = UserRoleEnum.ADMIN;
-        }
-
-        User user = new User(username, bcryptpassword, nickName, role);
+        User user = new User(username, bcryptpassword, nickName);
         userRepository.save(user);
 
         responseDto.setMsg("회원가입이 완료 되었습니다.");

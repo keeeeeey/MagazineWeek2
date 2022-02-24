@@ -24,11 +24,8 @@ public class PostController {
     public UserResponseDto createpost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserResponseDto responseDto = new UserResponseDto();
         Post post = new Post(requestDto);
-        String username = userDetails.getUsername();
-        if (username == null) {
-            responseDto.setResult(false);
-            responseDto.setMsg("로그인 후 등록이 가능합니다.");
-            return responseDto;
+        if (userDetails == null) {
+            throw new IllegalArgumentException("로그인 후 등록이 가능합니다.");
         }
         postRepository.save(post);
         responseDto.setResult(true);
@@ -49,34 +46,20 @@ public class PostController {
     }
 
     //게시물 수정
-    @PutMapping("/api/post") //게시물 수정
-    public UserResponseDto putPost(@RequestBody PostUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto responseDto = new UserResponseDto();
+    @PutMapping("/api/post/{postId}") //게시물 수정
+    public UserResponseDto putPost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String username = userDetails.getUsername();
-        String username2 = updateRequestDto.getUsername();
+        String username2 = requestDto.getUsername();
         if (!username.equals(username2)) {
-            responseDto.setResult(false);
-            responseDto.setMsg("작성자만 수정이 가능합니다.");
-            return responseDto;
+            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
-        return postService.update(updateRequestDto);
+        return postService.update(requestDto, postId);
     }
 
     //게시물 삭제
-    @DeleteMapping("/api/post") // 게시물 삭제
-    public UserResponseDto deletePost(@RequestBody PostRemoveRequestDto removeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        UserResponseDto responseDto = new UserResponseDto();
-        String username = userDetails.getUsername();
-        String username2 = removeRequestDto.getUsername();
-        if (!username.equals(username2)) {
-            responseDto.setResult(false);
-            responseDto.setMsg("작성자만 삭제가 가능합니다.");
-            return responseDto;
-        }
-        postRepository.deleteById(removeRequestDto.getPostId());
-        responseDto.setResult(true);
-        responseDto.setMsg("success");
-        return responseDto;
+    @DeleteMapping("/api/post/{postId}") // 게시물 삭제
+    public UserResponseDto deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.deletePost(postId, userDetails);
     }
 
 }

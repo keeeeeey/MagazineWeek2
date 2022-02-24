@@ -1,13 +1,11 @@
 package com.sparta.magazine_week2.security;
 
 import com.sparta.magazine_week2.entity.User;
-import com.sparta.magazine_week2.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -53,13 +51,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum userRole = user.getRole();
-        String authority = userRole.getAuthority();
-
-        SimpleGrantedAuthority simpleAuthority = new SimpleGrantedAuthority(authority);
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(simpleAuthority);
-
-        return authorities;
+        return Collections.emptyList();
     }
 }
