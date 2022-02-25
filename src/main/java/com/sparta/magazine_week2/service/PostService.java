@@ -52,4 +52,22 @@ public class PostService {
         responseDto.setMsg("success");
         return responseDto;
     }
+
+    @Transactional // 메소드 동작이 SQL 쿼리문임을 선언합니다.
+    public Long updateLikeCount(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("이미 삭제된 글입니다.")
+        );
+        post.pluslike();
+        return id;
+    }
+
+    @Transactional // 메소드 동작이 SQL 쿼리문임을 선언합니다.
+    public Long minusLikeCount(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("이미 삭제된 글입니다.")
+        );
+        post.minuslike();
+        return id;
+    }
 }

@@ -17,10 +17,12 @@ import java.util.Optional;
 public class LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
+    private final PostService postService;
 
-    public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
+    public LikeService(LikeRepository likeRepository, PostRepository postRepository, PostService postService) {
         this.likeRepository = likeRepository;
         this.postRepository = postRepository;
+        this.postService = postService;
     }
 
     @Transactional
@@ -31,19 +33,12 @@ public class LikeService {
             throw new IllegalArgumentException("로그인 후 이용 가능합니다.");
         }
 
-        //해당 POST 게시물 likecount +1 해주기
-        Post post = postRepository.findById(likeRequestDto.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-
         //이미 값이 있을 때
         Optional<LikeNumber> likeNumber = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
         if (likeNumber.isPresent()) {
             likeRepository.deleteById(likeNumber.get().getId());
 
-            PostRequestDto requestDto = new PostRequestDto(post);
-            requestDto.setLikeCount(requestDto.getLikeCount() - 1);
-
-            post.update(requestDto);
+            postService.minusLikeCount(likeRequestDto.getPostId());
 
             responseDto.setResult(true);
             responseDto.setMsg("좋아요 취소 성공");
@@ -54,12 +49,7 @@ public class LikeService {
             LikeNumber likeNumbers = new LikeNumber(likeRequestDto);
             likeRepository.save(likeNumbers);
 
-            PostRequestDto requestDto = new PostRequestDto(post);
-            requestDto.setLikeCount(requestDto.getLikeCount() + 1);
-
-            post.update(requestDto);
-
-            //리턴
+            postService.updateLikeCount(likeRequestDto.getPostId());
 
             responseDto.setResult(true);
             responseDto.setMsg("좋아요 성공");

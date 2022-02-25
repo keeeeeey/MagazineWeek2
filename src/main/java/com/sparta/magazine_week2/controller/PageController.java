@@ -11,7 +11,7 @@ public class PageController {
         return "signup";
     }
 
-    @GetMapping("/user/login")
+    @GetMapping("/user/loginView")
     public String loginForm() {
         return "login";
     }

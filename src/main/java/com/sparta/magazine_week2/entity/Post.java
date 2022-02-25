@@ -4,6 +4,7 @@ import com.sparta.magazine_week2.dto.PostRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Getter
 @Entity
 public class Post extends Timestamped {
@@ -23,13 +25,8 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents; //내용
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column
-    @ColumnDefault("0")
-    private Long likeCount; //좋아요
+    private int likeCount; //좋아요
 
     @Column(nullable = false)
     private String nickName; //닉네임
@@ -43,14 +40,11 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String type; //내용
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<LikeNumber> likeNumber = new ArrayList<>();
-
     public Post(PostRequestDto requestDto){
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();
         this.username = requestDto.getUsername();
-        this.likeCount = requestDto.getLikeCount();
+        this.likeCount = 0;
         this.image = requestDto.getImage();
         this.type = requestDto.getType();
     }
@@ -62,5 +56,13 @@ public class Post extends Timestamped {
         this.likeCount = requestDto.getLikeCount();
         this.image = requestDto.getImage();
         this.type = requestDto.getType();
+    }
+
+    public void pluslike() {
+        this.likeCount = likeCount + 1;
+    }
+
+    public void minuslike() {
+        this.likeCount = likeCount - 1;
     }
 }
