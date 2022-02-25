@@ -38,8 +38,14 @@ public class PostController {
     @GetMapping("/api/post") //게시물 조회
     public PostResponseDto getPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto responseDto = new PostResponseDto();
-        String username = userDetails.getUsername();
+
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
+        if (userDetails == null) {
+            responseDto.setPosts(posts);
+            return responseDto;
+        }
+
+        String username = userDetails.getUsername();
         responseDto.setPosts(posts);
         responseDto.setUsername(username);
         return responseDto;
