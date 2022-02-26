@@ -20,10 +20,10 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "webfirewood";
+    private String secretKey = "webfirewoodwebfirewoodwebfirewood";
 
-    // 토큰 유효시간 30분
-    private long tokenValidTime = 30 * 60 * 1000L;
+    // 토큰 유효시간 10분
+    private long tokenValidTime = 10 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -34,8 +34,9 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String userPk, String nickName) {
+    public String createToken(String userPk, String userId, String nickName) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
+        claims.put("userId", userId);
         claims.put("nickName", nickName); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()

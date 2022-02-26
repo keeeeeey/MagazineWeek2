@@ -41,7 +41,7 @@ public class UserController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
         LoginResponseDto responseDto = new LoginResponseDto();
-        String token = jwtTokenProvider.createToken(user.getUsername(), user.getNickName());
+        String token = jwtTokenProvider.createToken(user.getUsername(), Long.toString(user.getId()), user.getNickName());
         responseDto.setResult(true);
         responseDto.setMsg("success");
         responseDto.setToken(token);

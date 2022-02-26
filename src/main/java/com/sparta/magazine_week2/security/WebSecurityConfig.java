@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/post").permitAll()
-                .anyRequest().authenticated() // 그외 나머지 요청은 누구나 접근 가능
+                .anyRequest().authenticated() // 그외 나머지 요청은 사용권한 체크
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);

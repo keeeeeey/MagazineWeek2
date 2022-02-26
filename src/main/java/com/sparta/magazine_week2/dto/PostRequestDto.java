@@ -1,6 +1,7 @@
 package com.sparta.magazine_week2.dto;
 
 import com.sparta.magazine_week2.entity.Post;
+import com.sparta.magazine_week2.entity.PostTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +14,5 @@ public class PostRequestDto {
     private String username;
     private int likeCount;
     private String image;
-    private String type;
+    private PostTypeEnum type;
 }

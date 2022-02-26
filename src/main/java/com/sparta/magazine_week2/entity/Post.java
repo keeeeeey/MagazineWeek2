@@ -5,11 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,7 +35,8 @@ public class Post extends Timestamped {
     private String image; //내용
 
     @Column(nullable = false)
-    private String type; //내용
+    @Enumerated(EnumType.STRING)
+    private PostTypeEnum type; //내용
 
     public Post(PostRequestDto requestDto){
         this.contents = requestDto.getContents();

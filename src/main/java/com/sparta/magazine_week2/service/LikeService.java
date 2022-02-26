@@ -16,12 +16,10 @@ import java.util.Optional;
 @Service
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
     private final PostService postService;
 
-    public LikeService(LikeRepository likeRepository, PostRepository postRepository, PostService postService) {
+    public LikeService(LikeRepository likeRepository, PostService postService) {
         this.likeRepository = likeRepository;
-        this.postRepository = postRepository;
         this.postService = postService;
     }
 

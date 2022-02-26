@@ -1,24 +1,24 @@
 package com.sparta.magazine_week2.controller;
 
 import com.sparta.magazine_week2.dto.*;
+import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
+import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.PostRepository;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.PostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
-
-    public PostController(PostRepository postRepository, PostService postService) {
-        this.postRepository = postRepository;
-        this.postService = postService;
-    }
+    private final LikeRepository likeRepository;
 
     @PostMapping("/api/post") //게시물 등록
     public UserResponseDto createpost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -36,18 +36,13 @@ public class PostController {
 
     //좋아요 다만들면 리턴 좋아요도 같이 해주기
     @GetMapping("/api/post") //게시물 조회
-    public PostResponseDto getPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public PostResponseDto getPost(@RequestBody PostGetRequestDto requestDto) {
         PostResponseDto responseDto = new PostResponseDto();
-
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
-        if (userDetails == null) {
-            responseDto.setPosts(posts);
-            return responseDto;
-        }
+        List<LikeNumber> likePosts = likeRepository.findAllByUserId(requestDto.getUserId());
+        responseDto.setMyLike(likePosts);
+        responseDto.setTotal(posts);
 
-        String username = userDetails.getUsername();
-        responseDto.setPosts(posts);
-        responseDto.setUsername(username);
         return responseDto;
     }
 
