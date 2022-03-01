@@ -15,15 +15,18 @@ public class LikeNumber {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn
     @Column(nullable = false)
-    private Long postId;
+    private Post post;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User user;
 
-    public LikeNumber(LikeRequestDto likeRequestDto){
-        this.postId = likeRequestDto.getPostId();
-        this.userId = likeRequestDto.getUserId();
+    public LikeNumber(Post post, User user){
+        this.post = post;
+        this.user = user;
     }
 
 }

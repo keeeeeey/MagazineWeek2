@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass // 맴버 변수 컬림이 되도록 함
 @EntityListeners(AuditingEntityListener.class) // 변경 되었을 대 자동 기록.
-
 public abstract class Timestamped {
     @CreatedDate // 최초 생성 시점
     private LocalDateTime createdAt;

@@ -29,9 +29,6 @@ public class Post extends Timestamped {
     private String nickName; //닉네임
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String image; //내용
 
     @Column(nullable = false)
@@ -41,7 +38,6 @@ public class Post extends Timestamped {
     public Post(PostRequestDto requestDto){
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();
-        this.username = requestDto.getUsername();
         this.likeCount = 0;
         this.image = requestDto.getImage();
         this.type = requestDto.getType();
@@ -50,7 +46,6 @@ public class Post extends Timestamped {
     public void update(PostRequestDto requestDto) {
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();
-        this.username = requestDto.getUsername();
         this.likeCount = requestDto.getLikeCount();
         this.image = requestDto.getImage();
         this.type = requestDto.getType();

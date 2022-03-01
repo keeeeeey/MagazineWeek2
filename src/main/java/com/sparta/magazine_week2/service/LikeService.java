@@ -5,23 +5,24 @@ import com.sparta.magazine_week2.dto.PostRequestDto;
 import com.sparta.magazine_week2.dto.UserResponseDto;
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
+import com.sparta.magazine_week2.entity.User;
 import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.PostRepository;
+import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class LikeService {
     private final LikeRepository likeRepository;
     private final PostService postService;
-
-    public LikeService(LikeRepository likeRepository, PostService postService) {
-        this.likeRepository = likeRepository;
-        this.postService = postService;
-    }
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public UserResponseDto likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
@@ -44,7 +45,12 @@ public class LikeService {
             return responseDto;
         } else {
             //좋아요 DB 저장
-            LikeNumber likeNumbers = new LikeNumber(likeRequestDto);
+            Post post = postRepository.findById(likeRequestDto.getPostId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+            User user = userRepository.findById(likeRequestDto.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+            LikeNumber likeNumbers = new LikeNumber(post, user);
             likeRepository.save(likeNumbers);
 
             postService.updateLikeCount(likeRequestDto.getPostId());

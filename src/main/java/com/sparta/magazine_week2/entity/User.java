@@ -1,13 +1,11 @@
 package com.sparta.magazine_week2.entity;
 
-import com.sparta.magazine_week2.dto.UserRequestDto;
+import com.sparta.magazine_week2.validator.UserValidator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -29,6 +27,8 @@ public class User extends Timestamped {
     private String nickName; //닉네임
 
     public User(String username, String password, String nickName) {
+        UserValidator.validateUserInput(username, password, nickName);
+
         this.username = username;
         this.password = password;
         this.nickName = nickName;

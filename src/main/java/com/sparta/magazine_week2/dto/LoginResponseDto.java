@@ -8,5 +8,5 @@ import lombok.Setter;
 public class LoginResponseDto {
     private boolean result;
     private String msg;
-    private String token;
+    private String tokenname;
 }

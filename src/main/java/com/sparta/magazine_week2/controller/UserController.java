@@ -44,7 +44,7 @@ public class UserController {
         String token = jwtTokenProvider.createToken(user.getUsername(), Long.toString(user.getId()), user.getNickName());
         responseDto.setResult(true);
         responseDto.setMsg("success");
-        responseDto.setToken(token);
+        responseDto.setTokenname(token);
         return responseDto;
     }
 }

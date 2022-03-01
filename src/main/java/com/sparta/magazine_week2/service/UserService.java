@@ -29,6 +29,11 @@ public class UserService {
 
         // 회원 ID 중복 확인
         String username = requestDto.getUsername();
+
+        if (username == null) {
+            throw new IllegalArgumentException("아이디를 입력해주세요.");
+        }
+
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 아이디입니다.");

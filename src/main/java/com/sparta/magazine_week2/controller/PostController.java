@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,9 +50,10 @@ public class PostController {
     //게시물 수정
     @PutMapping("/api/post/{postId}") //게시물 수정
     public UserResponseDto putPost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUsername();
-        String username2 = requestDto.getUsername();
-        if (!username.equals(username2)) {
+        String nickname = userDetails.getUser().getNickName();
+        String nickname2 = requestDto.getNickName();
+
+        if (!nickname.equals(nickname2)) {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
         return postService.update(requestDto, postId);
@@ -60,7 +62,20 @@ public class PostController {
     //게시물 삭제
     @DeleteMapping("/api/post/{postId}") // 게시물 삭제
     public UserResponseDto deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return postService.deletePost(postId, userDetails);
+        String nickname = userDetails.getUser().getNickName();
+        Optional<Post> post = postRepository.findById(postId);
+
+        if (!post.isPresent()) {
+            throw new IllegalArgumentException("이미 삭제된 글입니다.");
+        }
+
+        String nickname2 = post.get().getNickName();
+
+        if (!nickname.equals(nickname2)) {
+            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
+        }
+
+        return postService.deletePost(postId);
     }
 
 }

@@ -33,18 +33,8 @@ public class PostService {
 
     }
 
-    public UserResponseDto deletePost(Long postId, UserDetailsImpl userDetails) {
+    public UserResponseDto deletePost(Long postId) {
         UserResponseDto responseDto = new UserResponseDto();
-
-        Post post = postRepository.findById(postId).
-                orElseThrow(() -> new IllegalArgumentException("이미 삭제된 글입니다."));
-
-        String username = userDetails.getUsername();
-        String username2 = post.getUsername();
-
-        if (!username.equals(username2)) {
-            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
-        }
 
         postRepository.deleteById(postId);
 
