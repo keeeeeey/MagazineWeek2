@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,10 @@ public class Post extends Timestamped {
     @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "post_id")
+    private List<LikeNumber> likeNumber = new ArrayList<>();
 
     @Column(nullable = false)
     private String contents; //내용

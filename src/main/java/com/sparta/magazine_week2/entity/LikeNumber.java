@@ -1,5 +1,6 @@
 package com.sparta.magazine_week2.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.magazine_week2.dto.LikeRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +16,14 @@ public class LikeNumber {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_SUBJECT_POST"))
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_SUBJECT_USER"))
     private User user;
 
     public LikeNumber(Post post, User user){

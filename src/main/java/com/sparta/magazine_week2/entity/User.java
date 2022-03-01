@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -16,6 +18,10 @@ public class User extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id")
+    private List<LikeNumber> likeNumber = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username; //이메일아이디
