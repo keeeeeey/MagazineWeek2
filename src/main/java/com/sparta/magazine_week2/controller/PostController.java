@@ -27,7 +27,7 @@ public class PostController {
     @PostMapping("/api/post") //게시물 등록
     public UserResponseDto createpost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserResponseDto responseDto = new UserResponseDto();
-        Post post = Post.PostBuilder()
+        Post post = Post.builder()
                 .contents(requestDto.getContents())
                 .nickName(requestDto.getNickName())
                 .image(requestDto.getImage())

@@ -49,7 +49,7 @@ public class UserService {
         String nickName = requestDto.getNickName();
 
 //        User user = new User(username, bcryptpassword, nickName);
-        User user = User.UserBuilder()
+        User user = User.builder()
                 .username(username)
                 .password(bcryptpassword)
                 .nickName(nickName)

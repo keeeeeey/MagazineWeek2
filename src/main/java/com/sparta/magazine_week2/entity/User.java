@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 //@Setter
 @Entity
-//@Builder(builderMethodName = "UserBuilder")
+@Builder
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,14 +31,5 @@ public class User extends Timestamped {
 
     @Column(nullable = false, unique = true)
     private String nickName; //닉네임
-
-    @Builder(builderClassName = "UserBuilder", builderMethodName = "UserBuilder")
-    public User(String username, String password, String nickName) {
-        UserValidator.validateUserInput(username, password, nickName);
-
-        this.username = username;
-        this.password = password;
-        this.nickName = nickName;
-    }
 
 }

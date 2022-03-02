@@ -12,6 +12,7 @@ import java.util.List;
 //@Setter
 @Getter
 @Entity
+@Builder
 public class Post extends Timestamped {
     @Id
     @Column(name = "post_id")
@@ -38,16 +39,6 @@ public class Post extends Timestamped {
     @Enumerated(EnumType.STRING)
     private PostTypeEnum type; //내용
 
-    @Builder(builderClassName = "PostBuilder", builderMethodName = "PostBuilder")
-    public Post(String contents, String nickName, String image, PostTypeEnum type){
-        this.contents = contents;
-        this.nickName = nickName;
-        this.likeCount = 0;
-        this.image = image;
-        this.type = type;
-    }
-
-    @Builder(builderClassName = "PostUpdateBuilder", builderMethodName = "PostUpdateBuilder")
     public void update(PostRequestDto requestDto) {
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();

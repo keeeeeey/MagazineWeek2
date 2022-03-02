@@ -49,10 +49,12 @@ public class LikeService {
 
             User user = userRepository.findById(likeRequestDto.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
             LikeNumber likeNumbers = LikeNumber.LikeBuilder()
-                    .user(user)
-                    .post(post)
-                    .build();
+                                        .user(user)
+                                        .post(post)
+                                        .build();
+
             likeRepository.save(likeNumbers);
 
             postService.updateLikeCount(likeRequestDto.getPostId());
