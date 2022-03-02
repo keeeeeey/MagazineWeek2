@@ -1,18 +1,18 @@
 package com.sparta.magazine_week2.entity;
 
 import com.sparta.magazine_week2.validator.UserValidator;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
+//@Setter
 @Entity
+//@Builder(builderMethodName = "UserBuilder")
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +32,7 @@ public class User extends Timestamped {
     @Column(nullable = false, unique = true)
     private String nickName; //닉네임
 
+    @Builder(builderClassName = "UserBuilder", builderMethodName = "UserBuilder")
     public User(String username, String password, String nickName) {
         UserValidator.validateUserInput(username, password, nickName);
 

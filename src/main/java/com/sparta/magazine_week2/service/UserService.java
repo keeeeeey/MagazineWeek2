@@ -1,7 +1,7 @@
 package com.sparta.magazine_week2.service;
 
-import com.sparta.magazine_week2.dto.UserRequestDto;
-import com.sparta.magazine_week2.dto.UserResponseDto;
+import com.sparta.magazine_week2.dto.request.UserRequestDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.User;
 import com.sparta.magazine_week2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,13 @@ public class UserService {
         String bcryptpassword = passwordEncoder.encode(password);
         String nickName = requestDto.getNickName();
 
-        User user = new User(username, bcryptpassword, nickName);
+//        User user = new User(username, bcryptpassword, nickName);
+        User user = User.UserBuilder()
+                .username(username)
+                .password(bcryptpassword)
+                .nickName(nickName)
+                .build();
+
         userRepository.save(user);
 
         responseDto.setMsg("회원가입이 완료 되었습니다.");

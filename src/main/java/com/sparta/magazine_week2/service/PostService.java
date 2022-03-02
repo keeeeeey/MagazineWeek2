@@ -1,11 +1,10 @@
 package com.sparta.magazine_week2.service;
 
-import com.sparta.magazine_week2.dto.PostRequestDto;
-import com.sparta.magazine_week2.dto.UserResponseDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.repository.PostRepository;
 
-import com.sparta.magazine_week2.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

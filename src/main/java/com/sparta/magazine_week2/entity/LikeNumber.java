@@ -1,7 +1,7 @@
 package com.sparta.magazine_week2.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sparta.magazine_week2.dto.LikeRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +26,7 @@ public class LikeNumber {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_SUBJECT_USER"))
     private User user;
 
+    @Builder(builderClassName = "LikeBuilder", builderMethodName = "LikeBuilder")
     public LikeNumber(Post post, User user){
         this.post = post;
         this.user = user;

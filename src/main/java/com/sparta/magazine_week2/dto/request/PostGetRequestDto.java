@@ -1,4 +1,4 @@
-package com.sparta.magazine_week2.dto;
+package com.sparta.magazine_week2.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

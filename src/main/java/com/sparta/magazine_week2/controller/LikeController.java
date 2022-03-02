@@ -1,7 +1,7 @@
 package com.sparta.magazine_week2.controller;
 
-import com.sparta.magazine_week2.dto.LikeRequestDto;
-import com.sparta.magazine_week2.dto.UserResponseDto;
+import com.sparta.magazine_week2.dto.request.LikeRequestDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.LikeService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

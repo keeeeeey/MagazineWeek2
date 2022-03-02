@@ -1,13 +1,14 @@
 package com.sparta.magazine_week2.controller;
 
-import com.sparta.magazine_week2.dto.LoginRequestDto;
-import com.sparta.magazine_week2.dto.LoginResponseDto;
-import com.sparta.magazine_week2.dto.UserRequestDto;
-import com.sparta.magazine_week2.dto.UserResponseDto;
+import com.sparta.magazine_week2.dto.request.LoginRequestDto;
+import com.sparta.magazine_week2.dto.response.LoginResponseDto;
+import com.sparta.magazine_week2.dto.request.UserRequestDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.User;
 import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.security.JwtTokenProvider;
 import com.sparta.magazine_week2.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
     public UserController(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.userRepository = userRepository;

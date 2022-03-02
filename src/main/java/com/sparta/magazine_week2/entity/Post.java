@@ -1,18 +1,15 @@
 package com.sparta.magazine_week2.entity;
 
-import com.sparta.magazine_week2.dto.PostRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@Setter
 @Getter
 @Entity
 public class Post extends Timestamped {
@@ -41,14 +38,16 @@ public class Post extends Timestamped {
     @Enumerated(EnumType.STRING)
     private PostTypeEnum type; //내용
 
-    public Post(PostRequestDto requestDto){
-        this.contents = requestDto.getContents();
-        this.nickName = requestDto.getNickName();
+    @Builder(builderClassName = "PostBuilder", builderMethodName = "PostBuilder")
+    public Post(String contents, String nickName, String image, PostTypeEnum type){
+        this.contents = contents;
+        this.nickName = nickName;
         this.likeCount = 0;
-        this.image = requestDto.getImage();
-        this.type = requestDto.getType();
+        this.image = image;
+        this.type = type;
     }
 
+    @Builder(builderClassName = "PostUpdateBuilder", builderMethodName = "PostUpdateBuilder")
     public void update(PostRequestDto requestDto) {
         this.contents = requestDto.getContents();
         this.nickName = requestDto.getNickName();

@@ -1,6 +1,9 @@
 package com.sparta.magazine_week2.controller;
 
-import com.sparta.magazine_week2.dto.*;
+import com.sparta.magazine_week2.dto.request.PostGetRequestDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import com.sparta.magazine_week2.dto.response.PostResponseDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.repository.LikeRepository;
@@ -24,7 +27,13 @@ public class PostController {
     @PostMapping("/api/post") //게시물 등록
     public UserResponseDto createpost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserResponseDto responseDto = new UserResponseDto();
-        Post post = new Post(requestDto);
+        Post post = Post.PostBuilder()
+                .contents(requestDto.getContents())
+                .nickName(requestDto.getNickName())
+                .image(requestDto.getImage())
+                .type(requestDto.getType())
+                .build();
+
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인 후 등록이 가능합니다.");
         }

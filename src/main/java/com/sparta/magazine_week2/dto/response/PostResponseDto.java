@@ -1,4 +1,4 @@
-package com.sparta.magazine_week2.dto;
+package com.sparta.magazine_week2.dto.response;
 
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;

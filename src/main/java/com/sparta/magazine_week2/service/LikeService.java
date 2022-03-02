@@ -1,8 +1,7 @@
 package com.sparta.magazine_week2.service;
 
-import com.sparta.magazine_week2.dto.LikeRequestDto;
-import com.sparta.magazine_week2.dto.PostRequestDto;
-import com.sparta.magazine_week2.dto.UserResponseDto;
+import com.sparta.magazine_week2.dto.request.LikeRequestDto;
+import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.User;
@@ -50,7 +49,10 @@ public class LikeService {
 
             User user = userRepository.findById(likeRequestDto.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-            LikeNumber likeNumbers = new LikeNumber(post, user);
+            LikeNumber likeNumbers = LikeNumber.LikeBuilder()
+                    .user(user)
+                    .post(post)
+                    .build();
             likeRepository.save(likeNumbers);
 
             postService.updateLikeCount(likeRequestDto.getPostId());
