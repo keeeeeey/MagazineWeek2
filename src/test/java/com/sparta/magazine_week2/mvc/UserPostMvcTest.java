@@ -5,7 +5,7 @@
 //import com.sparta.magazine_week2.controller.UserController;
 //import com.sparta.magazine_week2.entity.User;
 //import com.sparta.magazine_week2.security.UserDetailsImpl;
-//import com.sparta.magazine_week2.security.WebSecurityConfig;
+//import com.sparta.magazine_week2.config.WebSecurityConfig;
 //import com.sparta.magazine_week2.service.PostService;
 //import com.sparta.magazine_week2.service.UserService;
 //import org.junit.jupiter.api.BeforeEach;

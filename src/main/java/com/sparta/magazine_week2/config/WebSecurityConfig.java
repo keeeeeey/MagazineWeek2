@@ -1,5 +1,7 @@
-package com.sparta.magazine_week2.security;
+package com.sparta.magazine_week2.config;
 
+import com.sparta.magazine_week2.security.JwtAuthenticationFilter;
+import com.sparta.magazine_week2.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

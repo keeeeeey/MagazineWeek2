@@ -38,7 +38,7 @@ public class PostController {
     }
 
     //게시물 수정
-    @PutMapping("/api/post/{postId}")
+    @PatchMapping("/api/post/{postId}")
     public ResponseEntity<Success> putPost(@PathVariable Long postId,
                                            @RequestBody PostRequestDto requestDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {

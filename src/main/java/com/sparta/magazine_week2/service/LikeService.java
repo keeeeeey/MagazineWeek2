@@ -24,10 +24,6 @@ public class LikeService {
 
     @Transactional
     public void likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
-        if (userDetails == null) {
-            throw new IllegalArgumentException("로그인 후 이용 가능합니다.");
-        }
-
         //이미 값이 있을 때
         Optional<LikeNumber> likeNumber = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
         if (likeNumber.isPresent()) {
@@ -51,7 +47,6 @@ public class LikeService {
             likeRepository.save(likeNumbers);
 
             postService.updateLikeCount(likeRequestDto.getPostId());
-
         }
     }
 

@@ -23,10 +23,6 @@ public class UserService {
     public Long createUser(UserRequestDto requestDto) {
         // 회원 ID 중복 확인
         String username = requestDto.getUsername();
-        if (username == null) {
-            throw new IllegalArgumentException("아이디를 입력해주세요.");
-        }
-
         User findUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("중복된 아이디입니다."));
 
@@ -61,7 +57,7 @@ public class UserService {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(user.getUsername(), Long.toString(user.getId()), user.getNickname());
+        String accessToken = jwtTokenProvider.createToken(user.getUsername());
 
         return LoginResponseDto.builder()
                 .account_id(user.getId())

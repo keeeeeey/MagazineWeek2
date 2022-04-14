@@ -1,10 +1,10 @@
 package com.sparta.magazine_week2.dto.request;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class UserRequestDto {
 
     private String username; //이메일아이디

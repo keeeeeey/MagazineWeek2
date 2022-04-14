@@ -1,22 +1,21 @@
-package com.sparta.magazine_week2.dto;
+package com.sparta.magazine_week2.dto.response;
 
 import com.sparta.magazine_week2.exception.ErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @NoArgsConstructor
 public class Fail {
     private String result = "fail";
     private String msg;
-    private HttpStatus status;
+    private int status;
     private String code;
 
     public Fail(final ErrorCode errorCode){
-        this.msg = errorCode.getErrorMessage();
-        this.status = errorCode.getHttpStatus();
-        this.code = errorCode.getErrorCode();
+        this.msg = errorCode.getMessage();
+        this.status = errorCode.getStatusCode();
+        this.code = errorCode.getCode();
     }
 
     public Fail(final String msg){

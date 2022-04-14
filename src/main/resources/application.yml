@@ -1,10 +1,14 @@
-  spring:
-    h2.console:
-      enabled: true
-    datasource:
-      url: jdbc:h2:mem:magazineWeek2
-      username: sa
-      password:
+spring:
+  profiles:
+    include:
+      - secret
+
+  h2.console:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:magazineWeek2
+    username: sa
+    password:
 
 #server:
 #  port: 80

@@ -25,17 +25,12 @@ public class PostService {
     @Transactional
     public Long createPost(@RequestBody PostRequestDto requestDto,
                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         Post post = Post.builder()
                 .contents(requestDto.getContents())
                 .nickName(requestDto.getNickName())
                 .image(requestDto.getImage())
                 .type(requestDto.getType())
                 .build();
-
-        if (userDetails == null) {
-            throw new IllegalArgumentException("로그인 후 등록이 가능합니다.");
-        }
 
         postRepository.save(post);
         return post.getId();
