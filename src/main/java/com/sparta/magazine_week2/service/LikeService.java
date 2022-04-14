@@ -1,7 +1,6 @@
 package com.sparta.magazine_week2.service;
 
 import com.sparta.magazine_week2.dto.request.LikeRequestDto;
-import com.sparta.magazine_week2.dto.response.UserResponseDto;
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.User;
@@ -24,9 +23,7 @@ public class LikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserResponseDto likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
-        UserResponseDto responseDto = new UserResponseDto();
-
+    public void likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인 후 이용 가능합니다.");
         }
@@ -38,10 +35,6 @@ public class LikeService {
 
             postService.minusLikeCount(likeRequestDto.getPostId());
 
-            responseDto.setResult(true);
-            responseDto.setMsg("좋아요 취소 성공");
-
-            return responseDto;
         } else {
             //좋아요 DB 저장
             Post post = postRepository.findById(likeRequestDto.getPostId())
@@ -50,7 +43,7 @@ public class LikeService {
             User user = userRepository.findById(likeRequestDto.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-            LikeNumber likeNumbers = LikeNumber.LikeBuilder()
+            LikeNumber likeNumbers = LikeNumber.builder()
                                         .user(user)
                                         .post(post)
                                         .build();
@@ -59,10 +52,6 @@ public class LikeService {
 
             postService.updateLikeCount(likeRequestDto.getPostId());
 
-            responseDto.setResult(true);
-            responseDto.setMsg("좋아요 성공");
-
-            return responseDto;
         }
     }
 

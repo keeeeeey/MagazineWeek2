@@ -1,32 +1,30 @@
 package com.sparta.magazine_week2.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class LikeNumber {
     @Id
     @Column(name = "like_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_SUBJECT_POST"))
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_SUBJECT_USER"))
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder(builderClassName = "LikeBuilder", builderMethodName = "LikeBuilder")
+    @Builder
     public LikeNumber(Post post, User user){
         this.post = post;
         this.user = user;

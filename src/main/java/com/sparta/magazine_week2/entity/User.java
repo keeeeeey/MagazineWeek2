@@ -10,18 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-//@Setter
 @Entity
 @Builder
 public class User extends Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id")
     private Long id;
-
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "user_id")
-    private List<LikeNumber> likeNumber = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username; //이메일아이디
@@ -30,6 +25,6 @@ public class User extends Timestamped {
     private String password; //비밀번호
 
     @Column(nullable = false, unique = true)
-    private String nickName; //닉네임
+    private String nickname; //닉네임
 
 }

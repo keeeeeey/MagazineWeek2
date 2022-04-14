@@ -7,20 +7,18 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@Setter
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class Post extends Timestamped {
     @Id
     @Column(name = "post_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "post_id")
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<LikeNumber> likeNumber = new ArrayList<>();
 
     @Column(nullable = false)
