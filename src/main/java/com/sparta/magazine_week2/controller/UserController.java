@@ -17,13 +17,13 @@ public class UserController {
     private final UserService userService;
 
     //유저 회원가입
-    @PostMapping("/api/register")
+    @PostMapping("/user/register")
     public ResponseEntity<Success> createUser(@RequestBody UserRequestDto requestDto){
         return new ResponseEntity<>(new Success("회원가입",
                 userService.createUser(requestDto)), HttpStatus.OK);
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/user/login")
     public ResponseEntity<Success> login(@RequestBody LoginRequestDto requestDto) {
         return new ResponseEntity<>(new Success("로그인", userService.login(requestDto)), HttpStatus.OK);
     }

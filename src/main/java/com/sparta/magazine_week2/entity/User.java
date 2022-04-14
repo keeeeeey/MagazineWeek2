@@ -1,17 +1,12 @@
 package com.sparta.magazine_week2.entity;
 
-import com.sparta.magazine_week2.validator.UserValidator;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Builder
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -26,5 +21,12 @@ public class User extends Timestamped {
 
     @Column(nullable = false, unique = true)
     private String nickname; //닉네임
+
+    @Builder
+    public User(final String username, final String password, final String nickname) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+    }
 
 }

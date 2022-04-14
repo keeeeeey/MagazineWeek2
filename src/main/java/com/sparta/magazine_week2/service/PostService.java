@@ -75,6 +75,7 @@ public class PostService {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
 
+        likeRepository.deleteAllByPostId(postId);
         postRepository.deleteById(postId);
     }
 

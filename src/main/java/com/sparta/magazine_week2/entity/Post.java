@@ -18,9 +18,6 @@ public class Post extends Timestamped {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<LikeNumber> likeNumber = new ArrayList<>();
-
     @Column(nullable = false)
     private String contents; //내용
 
