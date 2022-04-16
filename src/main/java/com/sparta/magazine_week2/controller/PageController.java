@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    @GetMapping("/api/register")
+    @GetMapping("/user/register")
     public String registerForm() {
         return "signup";
     }
 
-    @GetMapping("/api/loginView")
+    @GetMapping("/user/login")
     public String loginForm() {
         return "login";
     }

@@ -15,7 +15,7 @@ public class Fail {
     public Fail(final ErrorCode errorCode){
         this.msg = errorCode.getMessage();
         this.status = errorCode.getStatusCode();
-        this.code = errorCode.getCode();
+        this.code = errorCode.getErrorCode();
     }
 
     public Fail(final String msg){

@@ -10,9 +10,9 @@ spring:
     username: sa
     password:
 
-#server:
-#  port: 80
-#
+server:
+  port: 8081
+
 #spring:
 #  thymeleaf:
 #    cache: false

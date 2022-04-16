@@ -2,7 +2,7 @@ package com.sparta.magazine_week2.service;
 
 import com.sparta.magazine_week2.dto.request.LoginRequestDto;
 import com.sparta.magazine_week2.dto.request.UserRequestDto;
-import com.sparta.magazine_week2.dto.response.LoginResponseDto;
+import com.sparta.magazine_week2.dto.response.LoginResponseDto.CommonLoginResponseDto;
 import com.sparta.magazine_week2.entity.User;
 import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.security.JwtTokenProvider;
@@ -49,7 +49,7 @@ public class UserService {
 
     //로그인
     @Transactional
-    public LoginResponseDto login(LoginRequestDto requestDto) {
+    public CommonLoginResponseDto login(LoginRequestDto requestDto) {
         User user = userRepository.findByUsername(requestDto.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 아이디 입니다."));
 
@@ -59,8 +59,8 @@ public class UserService {
 
         String accessToken = jwtTokenProvider.createToken(user.getUsername());
 
-        return LoginResponseDto.builder()
-                .account_id(user.getId())
+        return CommonLoginResponseDto.builder()
+                .user_id(user.getId())
                 .nickname(user.getNickname())
                 .access_token(accessToken)
                 .build();
