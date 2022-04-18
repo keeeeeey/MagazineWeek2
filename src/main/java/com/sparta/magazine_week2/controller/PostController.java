@@ -2,6 +2,8 @@ package com.sparta.magazine_week2.controller;
 
 import com.sparta.magazine_week2.dto.Success;
 import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto.PostCreate;
+import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -18,29 +20,30 @@ public class PostController {
 
     //게시물 등록
     @PostMapping("/api/post")
-    public ResponseEntity<Success> createpost(@RequestBody PostRequestDto requestDto,
+    public ResponseEntity<Success> createpost(@RequestBody PostCreate requestDto,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return new ResponseEntity<>(new Success("게시글 작성",
                 postService.createPost(requestDto, userDetails)), HttpStatus.OK);
     }
 
-    //게시물 조회
+    //전체 게시물 조회
     @GetMapping("/api/post")
     public ResponseEntity<Success> getPost() {
         return new ResponseEntity<>(new Success("게시글 조회",
-                postService.getPost()), HttpStatus.OK);
+                postService.getPostList()), HttpStatus.OK);
     }
 
     //상세 게시글 조회
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<Success> getPostDetail() {
-        return null;
+    public ResponseEntity<Success> getPostDetail(@PathVariable Long postId,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new ResponseEntity<>(new Success("상세 게시글 조회", postService.getPost(postId, userDetails)), HttpStatus.OK);
     }
 
     //게시물 수정
     @PatchMapping("/api/post/{postId}")
     public ResponseEntity<Success> putPost(@PathVariable Long postId,
-                                           @RequestBody PostRequestDto requestDto,
+                                           @RequestBody PostUpdate requestDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return new ResponseEntity<>(new Success("게시글 수정",
                 postService.update(requestDto, postId, userDetails)), HttpStatus.OK);

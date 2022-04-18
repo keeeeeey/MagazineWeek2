@@ -25,27 +25,24 @@ public class LikeService {
     @Transactional
     public void likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
         //이미 값이 있을 때
-        Optional<LikeNumber> likeNumber = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
-        if (likeNumber.isPresent()) {
-            likeRepository.deleteById(likeNumber.get().getId());
+        boolean isLike = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
 
+        Post post = postRepository.findById(likeRequestDto.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        User user = userRepository.findById(likeRequestDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (isLike) {
+            likeRepository.deleteByPostIdAndUserId(post.getId(), user.getId());
             postService.minusLikeCount(likeRequestDto.getPostId());
-
         } else {
             //좋아요 DB 저장
-            Post post = postRepository.findById(likeRequestDto.getPostId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-
-            User user = userRepository.findById(likeRequestDto.getUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-
             LikeNumber likeNumbers = LikeNumber.builder()
                                         .user(user)
                                         .post(post)
                                         .build();
 
             likeRepository.save(likeNumbers);
-
             postService.updateLikeCount(likeRequestDto.getPostId());
         }
     }

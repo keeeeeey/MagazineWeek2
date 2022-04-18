@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<LikeNumber, Long> {
-    Optional<LikeNumber> findByPostIdAndUserId(Long postId, Long userId);
-    List<LikeNumber> findAllByUserId(Long userId);
+    boolean findByPostIdAndUserId(Long postId, Long userId);
     void deleteAllByPostId(Long postId);
+    void deleteByPostIdAndUserId(Long postId, Long userId);
 }

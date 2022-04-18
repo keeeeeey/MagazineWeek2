@@ -1,6 +1,9 @@
 package com.sparta.magazine_week2.service;
 
-import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto.PostCreate;
+import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
+import com.sparta.magazine_week2.dto.response.PostResponseDto;
+import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.PostRepository;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.soap.Detail;
 import java.util.List;
 
 
@@ -23,9 +27,10 @@ public class PostService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public Long createPost(@RequestBody PostRequestDto requestDto,
+    public Long createPost(@RequestBody PostCreate requestDto,
                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Post post = Post.builder()
+                .title(requestDto.getTitle())
                 .contents(requestDto.getContents())
                 .nickName(requestDto.getNickName())
                 .image(requestDto.getImage())
@@ -37,13 +42,32 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getPost() {
+    public List<Post> getPostList() {
         List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
         return posts;
     }
 
+    @Transactional(readOnly = true)
+    public DetailPost getPost(Long postId, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("존재하지 않는 게시글 입니다."));
+
+        if (userDetails != null) {
+            boolean isLike = likeRepository.findByPostIdAndUserId(postId, userDetails.getUser().getId());
+
+            return DetailPost.builder()
+                    .post(post)
+                    .isLike(isLike)
+                    .build();
+        }
+        return DetailPost.builder()
+                .post(post)
+                .isLike(false)
+                .build();
+    }
+
     @Transactional
-    public Long update(PostRequestDto requestDto, Long postId, UserDetailsImpl userDetails){
+    public Long update(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails){
         String nickname = userDetails.getUser().getNickname();
         String nickname2 = requestDto.getNickName();
 
