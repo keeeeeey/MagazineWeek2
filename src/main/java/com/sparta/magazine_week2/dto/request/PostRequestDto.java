@@ -26,4 +26,10 @@ public class PostRequestDto {
         private String type;
     }
 
+    @Getter
+    @NoArgsConstructor
+    public static class PostComment {
+        private String comment;
+    }
+
 }
