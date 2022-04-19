@@ -27,7 +27,7 @@ public class Post extends Timestamped {
     private int likeCount; //좋아요
 
     @Column(nullable = false)
-    private String nickName; //닉네임
+    private String nickname; //닉네임
 
     @Column(nullable = false)
     private String image; //내용
@@ -38,11 +38,11 @@ public class Post extends Timestamped {
 
     @Builder
     public Post(final String title, final String contents, final int likeCount,
-                final String nickName, final String image, final String type) {
+                final String nickname, final String image, final String type) {
         this.title = title;
         this.contents = contents;
         this.likeCount = likeCount;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.image = image;
         this.type = PostTypeEnum.valueOf(type);
     }

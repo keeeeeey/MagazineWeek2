@@ -1,4 +1,4 @@
-package com.sparta.magazine_week2.repository;
+package com.sparta.magazine_week2.repository.post;
 
 import com.sparta.magazine_week2.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

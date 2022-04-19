@@ -5,7 +5,7 @@
 //import com.sparta.magazine_week2.dto.response.UserResponseDto;
 //import com.sparta.magazine_week2.entity.Post;
 //import com.sparta.magazine_week2.entity.PostTypeEnum;
-//import com.sparta.magazine_week2.repository.PostRepository;
+//import com.sparta.magazine_week2.repository.post.PostRepository;
 //import com.sparta.magazine_week2.security.UserDetailsImpl;
 //import org.junit.jupiter.api.*;
 //import org.junit.jupiter.api.extension.ExtendWith;

@@ -6,7 +6,8 @@ import com.sparta.magazine_week2.dto.response.PostResponseDto;
 import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.repository.LikeRepository;
-import com.sparta.magazine_week2.repository.PostRepository;
+import com.sparta.magazine_week2.repository.post.PostCommentRepository;
+import com.sparta.magazine_week2.repository.post.PostRepository;
 
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.soap.Detail;
 import java.util.List;
 
 
@@ -25,6 +25,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final PostCommentRepository postCommentRepository;
 
     @Transactional
     public Long createPost(@RequestBody PostCreate requestDto,
@@ -32,7 +33,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .contents(requestDto.getContents())
-                .nickName(requestDto.getNickName())
+                .nickname(requestDto.getNickname())
                 .image(requestDto.getImage())
                 .type(requestDto.getType())
                 .build();
@@ -51,25 +52,27 @@ public class PostService {
     public DetailPost getPost(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("존재하지 않는 게시글 입니다."));
-
+        List<PostResponseDto.PostComment> postCommentList = postCommentRepository.findPostCommentByPostId(postId);
         if (userDetails != null) {
             boolean isLike = likeRepository.findByPostIdAndUserId(postId, userDetails.getUser().getId());
 
             return DetailPost.builder()
                     .post(post)
-                    .isLike(isLike)
+                    .is_like(isLike)
+                    .commentList(postCommentList)
                     .build();
         }
         return DetailPost.builder()
                 .post(post)
-                .isLike(false)
+                .is_like(false)
+                .commentList(postCommentList)
                 .build();
     }
 
     @Transactional
     public Long update(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails){
         String nickname = userDetails.getUser().getNickname();
-        String nickname2 = requestDto.getNickName();
+        String nickname2 = requestDto.getNickname();
 
         if (!nickname.equals(nickname2)) {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
@@ -88,7 +91,7 @@ public class PostService {
     public void deletePost(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("이미 삭제된 글입니다."));
         String nickname = userDetails.getUser().getNickname();
-        String nickname2 = post.getNickName();
+        String nickname2 = post.getNickname();
 
         if (!nickname.equals(nickname2)) {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");

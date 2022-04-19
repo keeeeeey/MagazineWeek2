@@ -5,14 +5,13 @@ import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.User;
 import com.sparta.magazine_week2.repository.LikeRepository;
-import com.sparta.magazine_week2.repository.PostRepository;
+import com.sparta.magazine_week2.repository.post.PostRepository;
 import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
