@@ -20,7 +20,7 @@ public class PostCommentRepositoryImpl implements PostCommentRepositoryCustom {
                 .select(Projections.constructor(PostResponseDto.PostComment.class,
                         postComment.id,
                         postComment.user.id,
-                        postComment.user.username,
+                        postComment.user.nickname,
                         postComment.user.profileImg,
                         postComment.comment,
                         postComment.modifiedAt

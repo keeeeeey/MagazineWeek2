@@ -23,18 +23,16 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents; //내용
 
-    @Column
+    @Column(columnDefinition = "BIGINT default 0")
     private int likeCount; //좋아요
 
     @Column(nullable = false)
     private String nickname; //닉네임
 
-    @Column(nullable = false)
-    private String image; //내용
+    private String image; //이미지
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PostTypeEnum type; //내용
+    private PostTypeEnum type; //타입
 
     @Builder
     public Post(final String title, final String contents, final int likeCount,

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class PostResponseDto {
@@ -44,11 +45,11 @@ public class PostResponseDto {
         private String nickname;
         private String profile_img;
         private String comment;
-        private Timestamped modify_time;
+        private Timestamp modify_time;
 
         @Builder
         public PostComment (final Long comment_id, final Long user_id, final String nickname, final String profile_img,
-                            final String comment, final Timestamped modify_time) {
+                            final String comment, final Timestamp modify_time) {
             this.comment_id = comment_id;
             this.user_id = user_id;
             this.nickname = nickname;

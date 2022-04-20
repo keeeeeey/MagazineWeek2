@@ -70,16 +70,16 @@ public class PostService {
     }
 
     @Transactional
-    public Long update(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails){
+    public Long update(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+
         String nickname = userDetails.getUser().getNickname();
-        String nickname2 = requestDto.getNickname();
+        String nickname2 = post.getNickname();
 
         if (!nickname.equals(nickname2)) {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
-
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
 
         post.update(requestDto);
 

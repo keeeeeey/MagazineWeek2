@@ -7,6 +7,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Table(name = "Users")
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -99,7 +99,7 @@ public class KakaoService {
                 .get("email").asText();
         String password = UUID.randomUUID().toString();
 
-        //System.out.println("카카오 사용자 정보: " + id + ", " + username + ", " + nickname + ", " + profileImage + ", " + email);
+        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ", " + profileImage + ", " + email);
         return new KakaoUserInfoDto(id, nickname, profileImage, email, password);
     }
 
