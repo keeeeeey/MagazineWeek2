@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,9 +24,10 @@ public class PostController {
     //게시물 등록
     @PostMapping("/api/post")
     public ResponseEntity<Success> createpost(@RequestBody PostCreate requestDto,
-                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                              @RequestPart(required = false) List<MultipartFile> imgFile) {
         return new ResponseEntity<>(new Success("게시글 작성",
-                postService.createPost(requestDto, userDetails)), HttpStatus.OK);
+                postService.createPost(requestDto, userDetails, imgFile)), HttpStatus.OK);
     }
 
     //전체 게시물 조회
@@ -37,7 +41,8 @@ public class PostController {
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<Success> getPostDetail(@PathVariable Long postId,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return new ResponseEntity<>(new Success("상세 게시글 조회", postService.getPost(postId, userDetails)), HttpStatus.OK);
+        return new ResponseEntity<>(new Success("상세 게시글 조회",
+                postService.getPost(postId, userDetails)), HttpStatus.OK);
     }
 
     //게시물 수정

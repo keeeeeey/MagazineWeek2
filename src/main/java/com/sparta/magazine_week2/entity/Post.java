@@ -29,26 +29,22 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String nickname; //닉네임
 
-    private String image; //이미지
-
     @Enumerated(EnumType.STRING)
     private PostTypeEnum type; //타입
 
     @Builder
     public Post(final String title, final String contents, final int likeCount,
-                final String nickname, final String image, final String type) {
+                final String nickname, final String type) {
         this.title = title;
         this.contents = contents;
         this.likeCount = likeCount;
         this.nickname = nickname;
-        this.image = image;
         this.type = PostTypeEnum.valueOf(type);
     }
 
     public void update(PostUpdate requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.image = requestDto.getImage();
         this.type = PostTypeEnum.valueOf(requestDto.getType());
     }
 

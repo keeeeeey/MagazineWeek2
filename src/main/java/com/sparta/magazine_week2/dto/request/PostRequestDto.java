@@ -11,7 +11,6 @@ public class PostRequestDto {
         private String title;
         private String contents;
         private String nickname;
-        private String image;
         private String type;
     }
 

@@ -5,18 +5,20 @@ import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
 import com.sparta.magazine_week2.dto.response.PostResponseDto;
 import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
 import com.sparta.magazine_week2.entity.Post;
+import com.sparta.magazine_week2.entity.PostImage;
 import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.post.PostCommentRepository;
+import com.sparta.magazine_week2.repository.post.PostImageRepository;
 import com.sparta.magazine_week2.repository.post.PostRepository;
 
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,18 +28,24 @@ public class PostService {
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
     private final PostCommentRepository postCommentRepository;
+    private final AwsS3Service awsS3Service;
+    private final PostImageRepository postImageRepository;
 
     @Transactional
-    public Long createPost(@RequestBody PostCreate requestDto,
-                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Long createPost(PostCreate requestDto, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .contents(requestDto.getContents())
                 .nickname(requestDto.getNickname())
-                .image(requestDto.getImage())
                 .type(requestDto.getType())
                 .build();
 
+        List<PostImage> imageList = new ArrayList<>();
+        imgFile.forEach((file) -> {
+//            postImageRepository.save
+        });
+
+        awsS3Service.uploadImage(imgFile);
         postRepository.save(post);
         return post.getId();
     }
