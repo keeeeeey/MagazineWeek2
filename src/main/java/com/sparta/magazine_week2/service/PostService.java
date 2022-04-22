@@ -93,6 +93,24 @@ public class PostService {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
 
+        if (requestDto.getDelete_img().size() != 0) {
+            requestDto.getDelete_img().forEach((img) -> {
+                awsS3Service.deleteImage(img.getImg_url());
+                postImageRepository.deleteByImageUrl(img.getImg_url());
+            });
+        }
+
+        if (imgFile.size() != 0) {
+            List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
+            fileUrlList.forEach((fileUrl) -> {
+                PostImage postImage = PostImage.builder()
+                        .postImg(fileUrl)
+                        .post(post)
+                        .build();
+                postImageRepository.save(postImage);
+            });
+        }
+
         post.update(requestDto);
 
         return post.getId();
