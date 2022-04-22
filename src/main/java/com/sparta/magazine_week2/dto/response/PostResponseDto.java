@@ -1,7 +1,7 @@
 package com.sparta.magazine_week2.dto.response;
 
 import com.sparta.magazine_week2.entity.Post;
-import com.sparta.magazine_week2.entity.Timestamped;
+import com.sparta.magazine_week2.entity.PostImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +28,15 @@ public class PostResponseDto {
         private Post post;
         private Boolean is_like;
         private List<PostComment> commentList;
+        private List<PostImage> postImage;
 
         @Builder
-        public DetailPost(final Post post, final Boolean is_like, final List<PostComment> commentList) {
+        public DetailPost(final Post post, final Boolean is_like, final List<PostComment> commentList,
+                          final List<PostImage> postImage) {
             this.post = post;
             this.is_like = is_like;
             this.commentList = commentList;
+            this.postImage = postImage;
         }
     }
 

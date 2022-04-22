@@ -13,12 +13,12 @@ import com.sparta.magazine_week2.repository.post.PostRepository;
 
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +33,9 @@ public class PostService {
 
     @Transactional
     public Long createPost(PostCreate requestDto, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
+        if (userDetails == null) {
+            throw new IllegalIdentifierException("로그인 후 이용 가능합니다.");
+        }
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .contents(requestDto.getContents())
@@ -40,12 +43,17 @@ public class PostService {
                 .type(requestDto.getType())
                 .build();
 
-        List<PostImage> imageList = new ArrayList<>();
-        imgFile.forEach((file) -> {
-//            postImageRepository.save
-        });
+        if (imgFile.size() != 0) {
+            List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
+            fileUrlList.forEach((fileUrl) -> {
+                PostImage postImage = PostImage.builder()
+                        .postImg(fileUrl)
+                        .post(post)
+                        .build();
+                postImageRepository.save(postImage);
+            });
+        }
 
-        awsS3Service.uploadImage(imgFile);
         postRepository.save(post);
         return post.getId();
     }
@@ -57,28 +65,24 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public DetailPost getPost(Long postId, UserDetailsImpl userDetails) {
+    public DetailPost getPost(Long postId, Long userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("존재하지 않는 게시글 입니다."));
         List<PostResponseDto.PostComment> postCommentList = postCommentRepository.findPostCommentByPostId(postId);
-        if (userDetails != null) {
-            boolean isLike = likeRepository.findByPostIdAndUserId(postId, userDetails.getUser().getId());
 
-            return DetailPost.builder()
-                    .post(post)
-                    .is_like(isLike)
-                    .commentList(postCommentList)
-                    .build();
-        }
+        boolean isLike = likeRepository.findByPostIdAndUserId(postId, userId);
+        List<PostImage> imgList = postImageRepository.findByPostId(postId);
+
         return DetailPost.builder()
                 .post(post)
-                .is_like(false)
+                .is_like(isLike)
                 .commentList(postCommentList)
+                .postImage(imgList)
                 .build();
     }
 
     @Transactional
-    public Long update(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails) {
+    public Long updatePost(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
 
@@ -104,6 +108,11 @@ public class PostService {
         if (!nickname.equals(nickname2)) {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }
+
+        List<PostImage> imgList = postImageRepository.findByPostId(postId);
+        imgList.forEach((img) -> {
+            awsS3Service.deleteImage(img.getPostImg());
+        });
 
         likeRepository.deleteAllByPostId(postId);
         postRepository.deleteById(postId);

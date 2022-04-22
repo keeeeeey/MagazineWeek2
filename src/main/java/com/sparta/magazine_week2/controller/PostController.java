@@ -41,17 +41,22 @@ public class PostController {
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<Success> getPostDetail(@PathVariable Long postId,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
+            return new ResponseEntity<>(new Success("상세 게시글 조회",
+                    postService.getPost(postId, userDetails.getUser().getId())), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new Success("상세 게시글 조회",
-                postService.getPost(postId, userDetails)), HttpStatus.OK);
+                postService.getPost(postId, 0L)), HttpStatus.OK);
     }
 
     //게시물 수정
     @PatchMapping("/api/post/{postId}")
-    public ResponseEntity<Success> putPost(@PathVariable Long postId,
-                                           @RequestBody PostUpdate requestDto,
-                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Success> updatePost(@PathVariable Long postId,
+                                              @RequestBody PostUpdate requestDto,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                              @RequestPart(required = false) List<MultipartFile> imgFile) {
         return new ResponseEntity<>(new Success("게시글 수정",
-                postService.update(requestDto, postId, userDetails)), HttpStatus.OK);
+                postService.updatePost(requestDto, postId, userDetails, imgFile)), HttpStatus.OK);
     }
 
     //게시물 삭제

@@ -28,7 +28,7 @@ public class AwsS3Service {
     private final AmazonS3 amazonS3;
 
     public List<String> uploadImage(List<MultipartFile> multipartFile) {
-        List<String> fileNameList = new ArrayList<>();
+        List<String> fileUrlList = new ArrayList<>();
 
         multipartFile.forEach(file -> {
             String fileName = createFileName(file.getOriginalFilename());
@@ -42,15 +42,15 @@ public class AwsS3Service {
             } catch(IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
             }
-
-            fileNameList.add(fileName);
+            String fileUrl = getFileUrl(fileName);
+            fileUrlList.add(fileUrl);
         });
 
-        return fileNameList;
+        return fileUrlList;
     }
 
-    public void deleteImage(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+    public void deleteImage(String url) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, getFileName(url)));
     }
 
     private String createFileName(String fileName) {
@@ -63,5 +63,14 @@ public class AwsS3Service {
         } catch (StringIndexOutOfBoundsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
+    }
+
+    public String getFileUrl(String fileName) {
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    private String getFileName(String url) {
+        String[] paths = url.split("/");
+        return paths[paths.length-2] + "/" + paths[paths.length-1];
     }
 }
