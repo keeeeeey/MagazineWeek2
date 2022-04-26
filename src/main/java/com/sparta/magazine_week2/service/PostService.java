@@ -6,6 +6,7 @@ import com.sparta.magazine_week2.dto.response.PostResponseDto;
 import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.PostImage;
+import com.sparta.magazine_week2.repository.BatchInsertRepository;
 import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.post.PostCommentRepository;
 import com.sparta.magazine_week2.repository.post.PostImageRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,6 +32,7 @@ public class PostService {
     private final PostCommentRepository postCommentRepository;
     private final AwsS3Service awsS3Service;
     private final PostImageRepository postImageRepository;
+    private final BatchInsertRepository batchInsertRepository;
 
     @Transactional
     public Long createPost(PostCreate requestDto, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
@@ -44,14 +47,16 @@ public class PostService {
                 .build();
 
         if (imgFile.size() != 0) {
+            List<PostImage> imgList = new ArrayList<>();
             List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
             fileUrlList.forEach((fileUrl) -> {
                 PostImage postImage = PostImage.builder()
                         .postImg(fileUrl)
                         .post(post)
                         .build();
-                postImageRepository.save(postImage);
+                imgList.add(postImage);
             });
+            batchInsertRepository.postImageSaveAll(imgList);
         }
 
         postRepository.save(post);
@@ -101,14 +106,16 @@ public class PostService {
         }
 
         if (imgFile.size() != 0) {
+            List<PostImage> imgList = new ArrayList<>();
             List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
             fileUrlList.forEach((fileUrl) -> {
                 PostImage postImage = PostImage.builder()
                         .postImg(fileUrl)
                         .post(post)
                         .build();
-                postImageRepository.save(postImage);
+                imgList.add(postImage);
             });
+            batchInsertRepository.postImageSaveAll(imgList);
         }
 
         post.update(requestDto);
