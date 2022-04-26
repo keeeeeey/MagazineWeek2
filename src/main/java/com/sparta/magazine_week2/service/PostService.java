@@ -15,6 +15,8 @@ import com.sparta.magazine_week2.repository.post.PostRepository;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -64,8 +66,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getPostList() {
-        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
+    public List<Post> getPostList(int start) {
+        Pageable pageable = PageRequest.of(start, 10);
+        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc(pageable);
         return posts;
     }
 

@@ -32,9 +32,9 @@ public class PostController {
 
     //전체 게시물 조회
     @GetMapping("/api/post")
-    public ResponseEntity<Success> getPost() {
+    public ResponseEntity<Success> getPost(@RequestParam("start") int start) {
         return new ResponseEntity<>(new Success("게시글 조회",
-                postService.getPostList()), HttpStatus.OK);
+                postService.getPostList(start)), HttpStatus.OK);
     }
 
     //상세 게시글 조회
