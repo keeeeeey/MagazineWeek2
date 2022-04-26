@@ -3,6 +3,7 @@ spring:
     include:
       - secret
       - db
+      - credentials
 
   jpa:
     hibernate:

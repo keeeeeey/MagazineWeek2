@@ -104,7 +104,7 @@ public class PostService {
         if (requestDto.getDelete_img().size() != 0) {
             requestDto.getDelete_img().forEach((img) -> {
                 awsS3Service.deleteImage(img.getImg_url());
-                postImageRepository.deleteByImageUrl(img.getImg_url());
+                postImageRepository.deleteByPostImg(img.getImg_url());
             });
         }
 
