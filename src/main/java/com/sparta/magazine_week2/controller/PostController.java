@@ -4,6 +4,8 @@ import com.sparta.magazine_week2.dto.Success;
 import com.sparta.magazine_week2.dto.request.PostRequestDto;
 import com.sparta.magazine_week2.dto.request.PostRequestDto.PostCreate;
 import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +28,11 @@ public class PostController {
     public ResponseEntity<Success> createpost(@RequestBody PostCreate requestDto,
                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                               @RequestPart(required = false) List<MultipartFile> imgFile) {
-        return new ResponseEntity<>(new Success("게시글 작성",
-                postService.createPost(requestDto, userDetails, imgFile)), HttpStatus.OK);
+        if (userDetails == null) {
+            return new ResponseEntity<>(new Success("게시글 작성",
+                    postService.createPost(requestDto, userDetails, imgFile)), HttpStatus.OK);
+        }
+        throw new ErrorCustomException(ErrorCode.NO_AUTHENTICATION_ERROR);
     }
 
     //전체 게시물 조회

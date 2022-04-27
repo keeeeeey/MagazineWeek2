@@ -14,4 +14,11 @@ public class CommonDto {
             this.img_url = img_url;
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class Id {
+        private Long id;
+    }
+
 }

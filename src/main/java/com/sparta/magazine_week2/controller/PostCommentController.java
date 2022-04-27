@@ -21,7 +21,7 @@ public class PostCommentController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                  @PathVariable Long postId) {
         return new ResponseEntity<>(new Success("댓글 작성",
-                postCommentService.createComment(requestDto, userDetails, postId)), HttpStatus.OK);
+                postCommentService.createComment(requestDto, userDetails.getUser().getId(), postId)), HttpStatus.OK);
     }
 
     @PatchMapping("/api/comment/{commentId}")
@@ -29,13 +29,13 @@ public class PostCommentController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                  @PathVariable Long commentId) {
         return new ResponseEntity<>(new Success("댓글 수정",
-                postCommentService.updateComment(requestDto, userDetails, commentId)), HttpStatus.OK);
+                postCommentService.updateComment(requestDto, userDetails.getUser().getId(), commentId)), HttpStatus.OK);
     }
 
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<Success> deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                  @PathVariable Long commentId) {
-        postCommentService.deleteComment(userDetails, commentId);
+        postCommentService.deleteComment(userDetails.getUser().getId(), commentId);
         return new ResponseEntity<>(new Success("댓글 삭제", ""), HttpStatus.OK);
     }
 }

@@ -1,7 +1,10 @@
 package com.sparta.magazine_week2.controller;
 
 import com.sparta.magazine_week2.dto.Success;
-import com.sparta.magazine_week2.dto.request.LikeRequestDto;
+import com.sparta.magazine_week2.dto.request.CommonDto;
+import com.sparta.magazine_week2.dto.request.CommonDto.Id;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import com.sparta.magazine_week2.service.LikeService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +22,12 @@ public class LikeController {
 
     //게시글 좋아요/ 좋아요 취소
     @PostMapping("/api/like")
-    public ResponseEntity<Success> likeNotLike(@RequestBody LikeRequestDto likeRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        likeService.likeNotLike(likeRequestDto, userDetails);
-        return new ResponseEntity<>(new Success("게시글 좋아요/좋아요 취소", ""), HttpStatus.OK);
+    public ResponseEntity<Success> likeNotLike(@RequestBody Id postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            likeService.likeNotLike(postId.getId(), userDetails.getUser().getId());
+            return new ResponseEntity<>(new Success("게시글 좋아요/좋아요 취소", ""), HttpStatus.OK);
+        }
+        throw new ErrorCustomException(ErrorCode.NO_AUTHENTICATION_ERROR);
     }
 
 }

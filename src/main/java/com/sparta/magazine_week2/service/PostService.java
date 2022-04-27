@@ -6,15 +6,17 @@ import com.sparta.magazine_week2.dto.response.PostResponseDto;
 import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.PostImage;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
 import com.sparta.magazine_week2.repository.BatchInsertRepository;
 import com.sparta.magazine_week2.repository.LikeRepository;
+import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.repository.post.PostCommentRepository;
 import com.sparta.magazine_week2.repository.post.PostImageRepository;
 import com.sparta.magazine_week2.repository.post.PostRepository;
 
 import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,13 +40,10 @@ public class PostService {
 
     @Transactional
     public Long createPost(PostCreate requestDto, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
-        if (userDetails == null) {
-            throw new IllegalIdentifierException("로그인 후 이용 가능합니다.");
-        }
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .contents(requestDto.getContents())
-                .nickname(requestDto.getNickname())
+                .nickname(userDetails.getUser().getNickname())
                 .type(requestDto.getType())
                 .build();
 
@@ -75,7 +74,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public DetailPost getPost(Long postId, Long userId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NullPointerException("존재하지 않는 게시글 입니다."));
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NONEXISTENT_ERROR));
         List<PostResponseDto.PostComment> postCommentList = postCommentRepository.findPostCommentByPostId(postId);
 
         boolean isLike = likeRepository.findByPostIdAndUserId(postId, userId);
@@ -92,7 +91,7 @@ public class PostService {
     @Transactional
     public Long updatePost(PostUpdate requestDto, Long postId, UserDetailsImpl userDetails, List<MultipartFile> imgFile) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NONEXISTENT_ERROR));
 
         String nickname = userDetails.getUser().getNickname();
         String nickname2 = post.getNickname();
@@ -129,12 +128,13 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, UserDetailsImpl userDetails) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("이미 삭제된 글입니다."));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NONEXISTENT_ERROR));
         String nickname = userDetails.getUser().getNickname();
         String nickname2 = post.getNickname();
 
         if (!nickname.equals(nickname2)) {
-            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
+            throw new ErrorCustomException(ErrorCode.NO_AUTHORIZATION_ERROR);
         }
 
         List<PostImage> imgList = postImageRepository.findByPostId(postId);
@@ -146,21 +146,4 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    @Transactional // 메소드 동작이 SQL 쿼리문임을 선언합니다.
-    public Long updateLikeCount(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("이미 삭제된 글입니다.")
-        );
-        post.pluslike();
-        return id;
-    }
-
-    @Transactional // 메소드 동작이 SQL 쿼리문임을 선언합니다.
-    public Long minusLikeCount(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("이미 삭제된 글입니다.")
-        );
-        post.minuslike();
-        return id;
-    }
 }

@@ -4,6 +4,8 @@ import com.sparta.magazine_week2.dto.request.LoginRequestDto;
 import com.sparta.magazine_week2.dto.request.UserRequestDto;
 import com.sparta.magazine_week2.dto.response.LoginResponseDto.CommonLoginResponseDto;
 import com.sparta.magazine_week2.entity.User;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
 import com.sparta.magazine_week2.repository.UserRepository;
 import com.sparta.magazine_week2.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +26,26 @@ public class UserService {
         // 회원 ID 중복 확인
         String username = requestDto.getUsername();
         User findUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("중복된 아이디입니다."));
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.ALREADY_USERNAME_ERROR));
 
         String password = requestDto.getPassword();
         String passwordCheck = requestDto.getPasswordCheck();
 
         if (!password.equals(passwordCheck)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new ErrorCustomException(ErrorCode.NO_MATCH_PASSWORD_ERROR);
         }
+
+        String nickname = requestDto.getNickName();
+        User findUserByNickname = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.ALREADY_NICKNAME_ERROR));
 
         // 패스워드 암호화
         String bcryptpassword = passwordEncoder.encode(password);
-        String nickName = requestDto.getNickName();
 
         User user = User.builder()
                 .username(username)
                 .password(bcryptpassword)
-                .nickname(nickName)
+                .nickname(nickname)
                 .build();
 
         userRepository.save(user);
@@ -51,10 +56,10 @@ public class UserService {
     @Transactional
     public CommonLoginResponseDto login(LoginRequestDto requestDto) {
         User user = userRepository.findByUsername(requestDto.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 아이디 입니다."));
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NO_USER_ERROR));
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new ErrorCustomException(ErrorCode.NO_MATCH_PASSWORD_ERROR);
         }
 
         String accessToken = jwtTokenProvider.createToken(user.getUsername());

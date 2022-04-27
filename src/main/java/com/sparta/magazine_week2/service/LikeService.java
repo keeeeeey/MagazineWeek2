@@ -1,13 +1,13 @@
 package com.sparta.magazine_week2.service;
 
-import com.sparta.magazine_week2.dto.request.LikeRequestDto;
 import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.User;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
 import com.sparta.magazine_week2.repository.LikeRepository;
 import com.sparta.magazine_week2.repository.post.PostRepository;
 import com.sparta.magazine_week2.repository.UserRepository;
-import com.sparta.magazine_week2.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +22,18 @@ public class LikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void likeNotLike(LikeRequestDto likeRequestDto, UserDetailsImpl userDetails){
+    public void likeNotLike(Long postId, Long userId){
         //이미 값이 있을 때
-        boolean isLike = likeRepository.findByPostIdAndUserId(likeRequestDto.getPostId(),likeRequestDto.getUserId());
+        boolean isLike = likeRepository.findByPostIdAndUserId(postId, userId);
 
-        Post post = postRepository.findById(likeRequestDto.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        User user = userRepository.findById(likeRequestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NONEXISTENT_ERROR));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorCustomException(ErrorCode.NO_USER_ERROR));
 
         if (isLike) {
             likeRepository.deleteByPostIdAndUserId(post.getId(), user.getId());
-            postService.minusLikeCount(likeRequestDto.getPostId());
+            post.minuslike();
         } else {
             //좋아요 DB 저장
             LikeNumber likeNumbers = LikeNumber.builder()
@@ -42,7 +42,7 @@ public class LikeService {
                                         .build();
 
             likeRepository.save(likeNumbers);
-            postService.updateLikeCount(likeRequestDto.getPostId());
+            post.pluslike();
         }
     }
 
