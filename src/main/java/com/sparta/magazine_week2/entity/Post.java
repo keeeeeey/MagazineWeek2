@@ -48,11 +48,4 @@ public class Post extends Timestamped {
         this.type = PostTypeEnum.valueOf(requestDto.getType());
     }
 
-    public void pluslike() {
-        this.likeCount = likeCount + 1;
-    }
-
-    public void minuslike() {
-        this.likeCount = likeCount - 1;
-    }
 }

@@ -33,16 +33,13 @@ public class LikeService {
 
         if (isLike) {
             likeRepository.deleteByPostIdAndUserId(post.getId(), user.getId());
-            post.minuslike();
         } else {
             //좋아요 DB 저장
             LikeNumber likeNumbers = LikeNumber.builder()
                                         .user(user)
                                         .post(post)
                                         .build();
-
             likeRepository.save(likeNumbers);
-            post.pluslike();
         }
     }
 

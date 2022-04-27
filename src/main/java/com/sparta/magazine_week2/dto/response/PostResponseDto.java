@@ -29,14 +29,16 @@ public class PostResponseDto {
         private Boolean is_like;
         private List<PostComment> commentList;
         private List<PostImage> postImage;
+        private Long likeCount;
 
         @Builder
         public DetailPost(final Post post, final Boolean is_like, final List<PostComment> commentList,
-                          final List<PostImage> postImage) {
+                          final List<PostImage> postImage, final Long likeCount) {
             this.post = post;
             this.is_like = is_like;
             this.commentList = commentList;
             this.postImage = postImage;
+            this.likeCount = likeCount;
         }
     }
 

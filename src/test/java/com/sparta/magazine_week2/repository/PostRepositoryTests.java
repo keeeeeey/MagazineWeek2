@@ -46,23 +46,41 @@ public class PostRepositoryTests {
     public void 전체글_조회() throws Exception {
         // given
         User user = testAccountSet();
+
         Post post1 = testPostSet(user);
         Post post2 = testPostSet(user);
         Post post3 = testPostSet(user);
+
+        LikeNumber likeNumber = testLikeNumber(post1, user);
+        LikeNumber likeNumber2 = testLikeNumber(post2, user);
+        LikeNumber likeNumber3 = testLikeNumber(post2, user);
+
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
         List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc(pageable);
+        List<LikeNumber> likeList = likeRepository.findAllByPostId(post1.getId());
+        List<LikeNumber> likeList2 = likeRepository.findAllByPostId(post2.getId());
 
         //then
         assertThat(postList.size()).isEqualTo(3);
+        assertThat(user.getUsername()).isEqualTo("username");
+        assertThat(user.getPassword()).isEqualTo("password");
+        assertThat(user.getNickname()).isEqualTo("nickname");
+        assertThat(postList.get(0).getTitle()).isEqualTo("title");
+        assertThat(postList.get(0).getContents()).isEqualTo("contents");
+        assertThat(postList.get(0).getNickname()).isEqualTo("nickname");
+        assertThat(postList.get(0).getType()).isEqualTo(PostTypeEnum.LEFT);
+        assertThat(likeList.size()).isEqualTo(1);
+        assertThat(likeList2.size()).isEqualTo(2);
+
     }
 
     private User testAccountSet() {
         User testUser = User.builder()
-                .username("test")
-                .password("test")
-                .nickname("test")
+                .username("username")
+                .password("password")
+                .nickname("nickname")
                 .build();
         User userSaved = userRepository.save(testUser);
         em.flush();
@@ -73,7 +91,7 @@ public class PostRepositoryTests {
     private Post testPostSet(User user) {
         Post post = Post.builder()
                 .title("title")
-                .contents("content")
+                .contents("contents")
                 .nickname(user.getNickname())
                 .type("LEFT")
                 .build();

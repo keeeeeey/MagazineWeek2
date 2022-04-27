@@ -4,6 +4,7 @@ import com.sparta.magazine_week2.dto.request.PostRequestDto.PostCreate;
 import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
 import com.sparta.magazine_week2.dto.response.PostResponseDto;
 import com.sparta.magazine_week2.dto.response.PostResponseDto.DetailPost;
+import com.sparta.magazine_week2.entity.LikeNumber;
 import com.sparta.magazine_week2.entity.Post;
 import com.sparta.magazine_week2.entity.PostImage;
 import com.sparta.magazine_week2.exception.ErrorCode;
@@ -47,18 +48,7 @@ public class PostService {
                 .type(requestDto.getType())
                 .build();
 
-        if (imgFile.size() != 0) {
-            List<PostImage> imgList = new ArrayList<>();
-            List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
-            fileUrlList.forEach((fileUrl) -> {
-                PostImage postImage = PostImage.builder()
-                        .postImg(fileUrl)
-                        .post(post)
-                        .build();
-                imgList.add(postImage);
-            });
-            batchInsertRepository.postImageSaveAll(imgList);
-        }
+        setImgList(post, imgFile);
 
         postRepository.save(post);
         return post.getId();
@@ -80,11 +70,14 @@ public class PostService {
         boolean isLike = likeRepository.findByPostIdAndUserId(postId, userId);
         List<PostImage> imgList = postImageRepository.findByPostId(postId);
 
+        List<LikeNumber> likeNumberList = likeRepository.findAllByPostId(postId);
+
         return DetailPost.builder()
                 .post(post)
                 .is_like(isLike)
                 .commentList(postCommentList)
                 .postImage(imgList)
+                .likeCount((long) likeNumberList.size())
                 .build();
     }
 
@@ -107,19 +100,7 @@ public class PostService {
             });
         }
 
-        if (imgFile.size() != 0) {
-            List<PostImage> imgList = new ArrayList<>();
-            List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
-            fileUrlList.forEach((fileUrl) -> {
-                PostImage postImage = PostImage.builder()
-                        .postImg(fileUrl)
-                        .post(post)
-                        .build();
-                imgList.add(postImage);
-            });
-            batchInsertRepository.postImageSaveAll(imgList);
-        }
-
+        setImgList(post, imgFile);
         post.update(requestDto);
 
         return post.getId();
@@ -144,6 +125,21 @@ public class PostService {
 
         likeRepository.deleteAllByPostId(postId);
         postRepository.deleteById(postId);
+    }
+
+    private void setImgList(Post post, List<MultipartFile> imgFile) {
+        if (imgFile.size() != 0) {
+            List<PostImage> imgList = new ArrayList<>();
+            List<String> fileUrlList = awsS3Service.uploadImage(imgFile);
+            fileUrlList.forEach((fileUrl) -> {
+                PostImage postImage = PostImage.builder()
+                        .postImg(fileUrl)
+                        .post(post)
+                        .build();
+                imgList.add(postImage);
+            });
+            batchInsertRepository.postImageSaveAll(imgList);
+        }
     }
 
 }
