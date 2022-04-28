@@ -1,12 +1,9 @@
 package com.sparta.magazine_week2.entity;
 
-import com.sparta.magazine_week2.dto.request.PostRequestDto;
 import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

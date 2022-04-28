@@ -69,7 +69,6 @@ public class PostService {
 
         boolean isLike = likeRepository.findByPostIdAndUserId(postId, userId);
         List<PostImage> imgList = postImageRepository.findByPostId(postId);
-
         List<LikeNumber> likeNumberList = likeRepository.findAllByPostId(postId);
 
         return DetailPost.builder()
@@ -90,7 +89,7 @@ public class PostService {
         String nickname2 = post.getNickname();
 
         if (!nickname.equals(nickname2)) {
-            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
+            throw new ErrorCustomException(ErrorCode.NO_MATCH_USER_ERROR);
         }
 
         if (requestDto.getDelete_img().size() != 0) {

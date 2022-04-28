@@ -1,72 +1,142 @@
-//package com.sparta.magazine_week2.service;
-//
-//import com.sparta.magazine_week2.dto.request.PostRequestDto;
-//import com.sparta.magazine_week2.dto.response.PostResponseDto;
-//import com.sparta.magazine_week2.dto.response.UserResponseDto;
-//import com.sparta.magazine_week2.entity.Post;
-//import com.sparta.magazine_week2.entity.PostTypeEnum;
-//import com.sparta.magazine_week2.repository.post.PostRepository;
-//import com.sparta.magazine_week2.security.UserDetailsImpl;
-//import org.junit.jupiter.api.*;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.util.Optional;
-//
-//import static com.sparta.magazine_week2.entity.PostTypeEnum.RIGHT;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.when;
-//
-//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@ExtendWith(MockitoExtension.class)
-//class PostServiceTest {
-//
-//    @Mock
-//    PostRepository postRepository;
-//
-//    @Test
-//    @DisplayName("포스트 수정")
-//    @Order(1)
-//    void update() {
-//        Long postId = 100L;
-//
-//        String contents = "내용";
-//        String nickName = "닉네임";
-//        int likeCount = 10;
-//        String image = "이미지 경로";
-//        PostTypeEnum type = RIGHT;
-//
-//        PostRequestDto requestDto = new PostRequestDto(contents, nickName, likeCount, image, type);
-//
-//        Post post = new Post(requestDto);
-//
-//        PostService postService = new PostService(postRepository);
-//        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
-//
-//        PostRequestDto requestDto2 = new PostRequestDto("내용2", nickName, likeCount, image, type);
-//
-//        postService.update(requestDto2, postId);
-//
-//        Optional<Post> post2 = postRepository.findById(postId);
-//
-//        assertEquals("내용2", post2.get().getContents());
-//
-//
-//    }
-//
-//    @Test
-//    @DisplayName("포스트 삭제")
-//    @Order(2)
-//    void deletePost() {
-//        Long postId = 100L;
-//        PostService postService = new PostService(postRepository);
-//
-//        postService.deletePost(postId);
-//
-//        Optional<Post> post = postRepository.findById(postId);
-//
-//        assertEquals(Optional.empty(), post);
-//    }
-//
-//}
+package com.sparta.magazine_week2.service;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.magazine_week2.dto.request.CommonDto;
+import com.sparta.magazine_week2.dto.request.CommonDto.ImgUrlDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto;
+import com.sparta.magazine_week2.dto.request.PostRequestDto.PostUpdate;
+import com.sparta.magazine_week2.entity.*;
+import com.sparta.magazine_week2.exception.ErrorCode;
+import com.sparta.magazine_week2.exception.ErrorCustomException;
+import com.sparta.magazine_week2.repository.LikeRepository;
+import com.sparta.magazine_week2.repository.UserRepository;
+import com.sparta.magazine_week2.repository.post.PostCommentRepository;
+import com.sparta.magazine_week2.repository.post.PostImageRepository;
+import com.sparta.magazine_week2.repository.post.PostRepository;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@Transactional
+public class PostServiceTest {
+
+    @Autowired
+    EntityManager em;
+
+    @Autowired
+    JPAQueryFactory queryFactory;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    PostImageRepository postImageRepository;
+
+    @Autowired
+    PostCommentRepository postCommentRepository;
+
+    @Autowired
+    LikeRepository likeRepository;
+
+    @Autowired
+    PostRepository postRepository;
+
+    @Test
+    public void 게시글_수정() {
+        // given
+        User user = testAccountSet();
+        Post post = testPostSet(user);
+        List<ImgUrlDto> imgList = new ArrayList<>();
+        PostUpdate update = new PostUpdate("title2", "content2", "RIGHT", imgList);
+
+        // when
+        Optional<Post> findPost = postRepository.findById(post.getId());
+        Optional<User> writer = userRepository.findById(user.getId());
+
+        String nickname = findPost.get().getNickname();
+        String nickname2 = writer.get().getNickname();
+
+        if (!nickname.equals(nickname2)) {
+            throw new ErrorCustomException(ErrorCode.NO_MATCH_USER_ERROR);
+        }
+
+        findPost.get().update(update);
+        Optional<Post> updatePost = postRepository.findById(findPost.get().getId());
+
+        // then
+        assertThat(updatePost.get().getTitle()).isEqualTo("title2");
+        assertThat(updatePost.get().getContents()).isEqualTo("content2");
+        assertThat(updatePost.get().getType()).isEqualTo(PostTypeEnum.RIGHT);
+
+    }
+
+    private User testAccountSet() {
+        User testUser = User.builder()
+                .username("username")
+                .password("password")
+                .nickname("nickname")
+                .build();
+        User userSaved = userRepository.save(testUser);
+        em.flush();
+        em.clear();
+        return userSaved;
+    }
+
+    private Post testPostSet(User user) {
+        Post post = Post.builder()
+                .title("title")
+                .contents("contents")
+                .nickname(user.getNickname())
+                .type("LEFT")
+                .build();
+        Post postSaved = postRepository.save(post);
+        em.flush();
+        em.clear();
+        return postSaved;
+    }
+
+    private PostImage testPostImageSet(Post post, String test) {
+        PostImage testPostImage = PostImage.builder()
+                .post(post)
+                .postImg(test)
+                .build();
+        PostImage postImagesaved = postImageRepository.save(testPostImage);
+
+        em.flush();
+        em.clear();
+        return postImagesaved;
+    }
+
+    private PostComment testPostComment(Post post, User user) {
+        PostComment comment = PostComment.builder()
+                .user(user)
+                .post(post)
+                .comment("test1")
+                .build();
+        PostComment postCommentSaved = postCommentRepository.save(comment);
+        em.flush();
+        em.clear();
+        return postCommentSaved;
+    }
+
+    private LikeNumber testLikeNumber(Post post, User user){
+        LikeNumber likes = LikeNumber.builder()
+                .post(post)
+                .user(user)
+                .build();
+        LikeNumber save = likeRepository.save(likes);
+        em.flush();
+        em.clear();
+        return save;
+    }
+
+}

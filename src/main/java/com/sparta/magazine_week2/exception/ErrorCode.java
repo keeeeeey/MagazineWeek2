@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     NO_AUTHENTICATION_ERROR(401, "401-1", "로그인 후 사용가능합니다."),
     NO_AUTHORIZATION_ERROR(403,"A005","접근 권한이 없습니다."),
+    NO_MATCH_USER_ERROR(403,"A006","작성자만 수정 및 삭제가 가능합니다."),
     NO_USER_ERROR(404, "A001","해당 유저를 찾을 수 없습니다."),
     ALREADY_USERNAME_ERROR(400, "V001","이미 사용중인 아이디입니다."),
     ALREADY_NICKNAME_ERROR(400, "V002","이미 사용중인 닉네임입니다."),

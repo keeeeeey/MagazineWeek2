@@ -1,6 +1,7 @@
 package com.sparta.magazine_week2.dto.request;
 
 import com.sparta.magazine_week2.dto.request.CommonDto.ImgUrlDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ public class PostRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class PostUpdate {
 
         @NotEmpty(message = "제목을 입력해주세요.")
